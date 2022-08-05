@@ -19,7 +19,7 @@
                 <a href="./" class="navbar-brand">Classifieds</a>
             </div>
             <ul class="nav navbar-nav navbar-right mr-auto">
-                <?php if(isset($_SESSION['cLogin'])): ?>
+                <?php if(isset($_SESSION['user_id'])): ?>
                     <li class="nav-item">
                         <a href="myItems.php" class="nav-link">My items</a>
                     </li>
