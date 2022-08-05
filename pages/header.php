@@ -24,7 +24,7 @@
                         <a class="nav-link"><?= $_SESSION['user_name']; ?></a> 
                     </li>
                     <li class="nav-item">
-                        <a href="myItems.php" class="nav-link">My items</a>
+                        <a href="myAdvertisements.php" class="nav-link">My items</a>
                     </li>
                     <li class="nav-item">
                         <a href="logout.php" class="nav-link">Logout</a>
