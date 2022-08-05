@@ -39,7 +39,7 @@ class User {
     public function login($email, $password){
         global $pdo;
 
-        $sql = $pdo->prepare("SELECT id FROM users WHERE email = :email AND password = :password");
+        $sql = $pdo->prepare("SELECT * FROM users WHERE email = :email AND password = :password");
         $sql->bindValue(':email', $email);
         $sql->bindValue(':password', $password);
         $sql->execute();
@@ -47,6 +47,7 @@ class User {
         if($sql->rowCount() > 0){
             $data = $sql->fetch();
             $_SESSION['user_id'] = $data['id'];
+            $_SESSION['user_name'] = $data['name'];
             return true;
         }else
             return false;

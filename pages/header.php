@@ -21,6 +21,9 @@
             <ul class="nav navbar-nav navbar-right mr-auto">
                 <?php if(isset($_SESSION['user_id'])): ?>
                     <li class="nav-item">
+                        <a class="nav-link"><?= $_SESSION['user_name']; ?></a> 
+                    </li>
+                    <li class="nav-item">
                         <a href="myItems.php" class="nav-link">My items</a>
                     </li>
                     <li class="nav-item">
