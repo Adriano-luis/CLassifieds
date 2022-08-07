@@ -30,7 +30,8 @@
         ?>
                 <tr>
                     <td>
-                        <img src="assets/images/advertisements/<?= $item['url'] ?>" alt="">
+                        <?php isset($item['url']) ? $img = $item['url'] : $img = 'default.png'; ?>
+                        <img src="assets/images/advertisements/<?= $img ?>" alt="" height="50">
                     </td>
                     <td>
                         <?= $item['title']; ?>
@@ -39,7 +40,8 @@
                         <?= number_format($item['price'], 2); ?>
                     </td>
                     <td>
-                        
+                        <a href="editAdvertisement.php?id=<?= $item['id'] ?>" class="btn btn-primary">Edit</a>
+                        <a href="deleteAdvertisement.php?id=<?= $item['id'] ?>" class="btn btn-danger">Delete</a>
                     </td>
                 </tr>
         <?php 

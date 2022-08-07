@@ -34,4 +34,15 @@ class Advertisement {
         $sql->execute();
 
     }
+
+    public function delete($id){
+        global $pdo;
+        $sql = $pdo->prepare("DELETE FROM advertisements_images WHERE advertisement_id = :id");
+        $sql->bindValue(':id', $id);
+        $sql->execute();
+
+        $sql = $pdo->prepare("DELETE FROM advertisements WHERE id = :id");
+        $sql->bindValue(':id', $id);
+        $sql->execute();
+    }
 }
