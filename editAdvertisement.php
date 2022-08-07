@@ -19,9 +19,12 @@
         $price = addslashes($_POST['price']);
         $status = addslashes($_POST['status']);
         $id = addslashes($_GET['id']);
-        
+        if(isset($_FILES['photos']))
+            $photos = $_FILES['photos'];
+        else
+            $photos = null;
 
-        $a->editAdvertisement($id, $category, $title, $description, $price, $status);
+        $a->editAdvertisement($id, $category, $title, $description, $price, $status, $photos);
         ?>
         <div class="alert alert-success alert-dismiss">Advertisement edited successfully!</div>
         <?php
@@ -80,7 +83,7 @@
         </div>
         <div class="form-group">
             <label for="photos">New Photos:</label>
-            <input type="file" name="photos[]" id="photos" multipart><br>
+            <input type="file" name="photos[]" id="photos" multiple><br>
             <div class="panel panel-default">
                 <div class="panel-heading">Photos</div>
                 <div class="panel-body">

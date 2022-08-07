@@ -48,7 +48,7 @@ class Advertisement {
             return null;
     }
 
-    public function editAdvertisement($id, $category, $title, $description, $price, $status){
+    public function editAdvertisement($id, $category, $title, $description, $price, $status, $photos){
         global $pdo;
         $sql = $pdo->prepare("UPDATE advertisements SET category_id = :category_id, title = :title, description = :description, price = :price, status = :status WHERE id = :id");
         $sql->bindValue(':id', $id);
@@ -58,6 +58,40 @@ class Advertisement {
         $sql->bindValue(':price', $price);
         $sql->bindValue(':status', $status);
         $sql->execute();
+
+        if(isset($photos)){
+            for($qt=0; $qt<count($photos['name']); $qt++){
+                if(in_array($photos['type'][$qt], array('image/png', 'image/jpeg',))){
+                    $tmpName = md5(time().rand(0, 9000)).$photos['name'][$qt].'.png';
+                    move_uploaded_file($photos['temp_name'][$qt], 'assets/images/advertisements/'.$tmpName);
+
+                    list($width_orig, $height_orig) = getimagesize('assets/images/advertisements/'.$tmpName);
+                    $ratio = $width_orig / $height_orig;
+                    $width = 500;
+                    $height = 500;
+
+                    if($width/$height > $ratio)
+                        $width = $height*$ratio;
+                    else
+                        $height = $width*$ratio;
+
+                    $img = imagecreatetruecolor($width, $height);
+                    if($type == 'image/jpeg'){
+                        $ogirin = imagecreatefromjpeg('assets/images/advertisements/'.$tmpName);
+                    }else if($type == 'image/png'){
+                        $ogirin = imagecreatefrompng('assets/images/advertisements/'.$tmpName);
+                    }
+
+                    imagecopyresampled($img, $ogirin, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
+                    imagejpeg($img, 'assets/images/advertisements/'.$tmpName, 80);
+
+                    $sql = $pdo->prepare("INSERT INTO advertisements_images SET advertisement_id = :id, url = :url");
+                    $sql->bindValue(':id', $id);
+                    $sql->bindValue(':url', $tmpName);
+                    $sql->execute();
+                }
+            }
+        }
     }
 
     public function delete($id){
