@@ -63,7 +63,7 @@ class Advertisement {
             for($qt=0; $qt<count($photos['name']); $qt++){
                 if(in_array($photos['type'][$qt], array('image/png', 'image/jpeg',))){
                     $tmpName = md5(time().rand(0, 9000)).$photos['name'][$qt].'.png';
-                    move_uploaded_file($photos['temp_name'][$qt], 'assets/images/advertisements/'.$tmpName);
+                    move_uploaded_file($photos['tmp_name'][$qt], 'assets/images/advertisements/'.$tmpName);
 
                     list($width_orig, $height_orig) = getimagesize('assets/images/advertisements/'.$tmpName);
                     $ratio = $width_orig / $height_orig;
@@ -76,9 +76,9 @@ class Advertisement {
                         $height = $width*$ratio;
 
                     $img = imagecreatetruecolor($width, $height);
-                    if($type == 'image/jpeg'){
+                    if($photos['type'][$qt] == 'image/jpeg'){
                         $ogirin = imagecreatefromjpeg('assets/images/advertisements/'.$tmpName);
-                    }else if($type == 'image/png'){
+                    }else if($photos['type'][$qt] == 'image/png'){
                         $ogirin = imagecreatefrompng('assets/images/advertisements/'.$tmpName);
                     }
 

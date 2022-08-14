@@ -31,7 +31,7 @@
                 <tr>
                     <td>
                         <?php isset($item['url']) ? $img = $item['url'] : $img = 'default.png'; ?>
-                        <img src="assets/images/advertisements/<?= $img ?>" alt="" height="50">
+                        <img src="assets/images/advertisements/<?= $img ?>" alt="" height="75">
                     </td>
                     <td>
                         <?= $item['title']; ?>
