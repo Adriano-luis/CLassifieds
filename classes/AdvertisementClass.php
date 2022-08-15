@@ -118,7 +118,7 @@ class Advertisement {
         $newId = 0;
 
         global $pdo;
-        $sql = $pdo->prepare("SELECT advertisement_id FROM advertisements_images WHERE id = :id");
+        $sql = $pdo->prepare("SELECT advertisement_id, url FROM advertisements_images WHERE id = :id");
         $sql->bindValue(':id', $id);
         $sql->execute();
         if ($sql->rowCount() > 0){
@@ -130,6 +130,9 @@ class Advertisement {
         $sql->bindValue(':id', $id);
         $sql->execute();
 
-        return $newId;
+        if(unlink('assets/images/advertisements/'.$data['url']))
+            return $newId;
+        else
+            echo 'Error';
     }
 }
