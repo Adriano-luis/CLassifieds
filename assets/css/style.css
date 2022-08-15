@@ -1,3 +1,14 @@
 .jumbotron h1{
     font-size: 30px;
 }
+
+.photo-item{
+    width: 150px;
+    float: left;
+    text-align: center;
+    margin-right: 10px;
+}
+
+.photo-item img{
+    width: 150px;
+}

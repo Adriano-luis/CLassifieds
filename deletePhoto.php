@@ -9,7 +9,9 @@
     require 'classes/AdvertisementClass.php';
 
     $advertisement = new Advertisement();
-    if(isset($_GET['id']))
-        $advertisement->delete($_GET['id']);
-    header("Location: myAdvertisements.php");
+    if(isset($_GET['id'])){
+        $id = $advertisement->deletePhoto($_GET['id']);
+        header("Location: editAdvertisement.php?id=".$id);
+    }else
+        header("Location: myAdvertisements.php");
 ?>

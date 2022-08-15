@@ -43,6 +43,15 @@ class Advertisement {
 
         if($sql->rowCount() > 0){
             $item = $sql->fetch();
+
+            $sql = $pdo->prepare("SELECT id,url FROM advertisements_images WHERE advertisement_id = :id");
+            $sql->bindValue(':id', $id);
+            $sql->execute();
+            if($sql->rowCount() > 0)
+                $item['photos'] = $sql->fetchAll();
+            else
+                $item['photos'] = null;
+
             return $item;
         }else
             return null;
@@ -103,5 +112,24 @@ class Advertisement {
         $sql = $pdo->prepare("DELETE FROM advertisements WHERE id = :id");
         $sql->bindValue(':id', $id);
         $sql->execute();
+    }
+
+    public function deletePhoto($id){
+        $newId = 0;
+
+        global $pdo;
+        $sql = $pdo->prepare("SELECT advertisement_id FROM advertisements_images WHERE id = :id");
+        $sql->bindValue(':id', $id);
+        $sql->execute();
+        if ($sql->rowCount() > 0){
+            $data = $sql->fetch();
+            $newId = $data['advertisement_id'];
+        }
+
+        $sql = $pdo->prepare("DELETE FROM advertisements_images WHERE id = :id");
+        $sql->bindValue(':id', $id);
+        $sql->execute();
+
+        return $newId;
     }
 }

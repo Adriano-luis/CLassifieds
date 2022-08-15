@@ -87,7 +87,14 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Photos</div>
                 <div class="panel-body">
-
+                    <?php if(isset($data['photos'])): ?>
+                        <?php foreach($data['photos'] as $photo) : ?>
+                            <div class="photo-item">
+                                <img class="img-thumbnail" src="assets/images/advertisements/<?= $photo['url']; ?>" border="0" />
+                                <a href="deletePhoto.php?id=<?= $photo['id']; ?>" class="btn btn-danger">Delete</a>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
