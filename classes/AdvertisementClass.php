@@ -37,7 +37,12 @@ class Advertisement {
 
     public function getAdvertisement($id){
         global $pdo;
-        $sql = $pdo->prepare("SELECT * FROM advertisements WHERE id = :id");
+        $sql = $pdo->prepare("SELECT *,
+            (SELECT categories.name FROM categories
+            WHERE categories.id = advertisements.category_id) as category,
+            (SELECT users.phone FROM users
+            WHERE users.id = advertisements.user_id) as phone
+        FROM advertisements WHERE id = :id");
         $sql->bindValue(':id', $id);
         $sql->execute();
 
@@ -66,7 +71,7 @@ class Advertisement {
 
         $sql = $pdo->prepare("SELECT *,
          (SELECT advertisements_images.url FROM advertisements_images
-            WHERE advertisements_images.advertisement_id = advertisements.id) as url,
+            WHERE advertisements_images.advertisement_id = advertisements.id LIMIT 1) as url,
         (SELECT categories.name FROM categories
             WHERE categories.id = advertisements.category_id) as category
         FROM advertisements ORDER BY id DESC LIMIT $offset, 2");

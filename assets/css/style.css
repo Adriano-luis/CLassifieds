@@ -12,3 +12,12 @@
 .photo-item img{
     width: 150px;
 }
+
+.carousel{
+    max-width: 295px;
+}
+
+.col-sm-4 .carousel-inner ~ a > span {
+    position: relative;
+    top: 50%;
+}
