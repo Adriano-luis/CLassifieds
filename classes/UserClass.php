@@ -3,6 +3,18 @@
 class User {
 
     /**
+     * return int
+     */
+    public function getTotal(){
+        global $pdo;
+
+        $sql = $pdo->query("SELECT COUNT(*) as c FROM users");
+        $total = $sql->fetch();
+
+        return $total['c'];
+    }
+
+    /**
      * param @name string 
      * param @email string 
      * param @password hash 

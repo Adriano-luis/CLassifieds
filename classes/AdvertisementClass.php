@@ -57,6 +57,28 @@ class Advertisement {
             return null;
     }
 
+    public function getLatested($page, $perPage = 2){
+        global $pdo;
+
+        $offset = ($page - 1) * $perPage;
+
+        $list = array();
+
+        $sql = $pdo->prepare("SELECT *,
+         (SELECT advertisements_images.url FROM advertisements_images
+            WHERE advertisements_images.advertisement_id = advertisements.id) as url,
+        (SELECT categories.name FROM categories
+            WHERE categories.id = advertisements.category_id) as category
+        FROM advertisements ORDER BY id DESC LIMIT $offset, 2");
+        $sql->execute();
+
+        if($sql->rowCount() > 0) {
+            $list = $sql->fetchAll();
+        }
+
+        return $list;
+    }
+
     public function editAdvertisement($id, $category, $title, $description, $price, $status, $photos){
         global $pdo;
         $sql = $pdo->prepare("UPDATE advertisements SET category_id = :category_id, title = :title, description = :description, price = :price, status = :status WHERE id = :id");
