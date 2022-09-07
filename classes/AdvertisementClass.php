@@ -2,20 +2,43 @@
 
 class Advertisement {
 
-    public function getAll(){
+    public function getAll($filters){
         global $pdo;
 
         $list = array();
 
+        $queryFilters = array('1=1');
+        if(isset($filters['category'])  && !empty($filters['category']))
+            $queryFilters[] = 'category_id = :category_id';
+        if((isset($filters['max-price']) && !empty($filters['max-price'])) && (isset($filters['min-price']) && (!empty($filters['min-price']) || $filters['min-price'] == "0")))
+            $queryFilters[] = 'price BETWEEN :min_price AND :max_price ';
+        if(isset($filters['title']) && !empty($filters['title']))
+            $queryFilters[] = 'title like :title';
+        if(isset($filters['status']) && !empty($filters['status']))
+            $queryFilters[] = 'status = :status';
+
         $sql = $pdo->prepare("SELECT *,
          (SELECT advertisements_images.url FROM advertisements_images
           WHERE advertisements_images.advertisement_id = advertisements.id limit 1 ) as url 
-          FROM advertisements WHERE user_id = :user_id ");
+          FROM advertisements WHERE user_id = :user_id AND ".implode(' AND ', $queryFilters)."");
         $sql->bindValue(':user_id', $_SESSION['user_id']);
+
+        if(isset($filters['category'])  && !empty($filters['category']))
+            $sql->bindValue(':category_id',$filters['category']);
+        if((isset($filters['max-price']) && !empty($filters['max-price'])) && (isset($filters['min-price']) && (!empty($filters['min-price']) || $filters['min-price'] == 0))){
+            $sql->bindValue(':max_price',$filters['max-price']);
+            $sql->bindValue(':min_price',$filters['min-price']);
+        }
+        if(isset($filters['title']) && !empty($filters['title']))
+            $sql->bindValue(':title',$filters['title']);
+        if(isset($filters['status']) && !empty($filters['status']))
+            $sql->bindValue(':status',$filters['status']);
+
         $sql->execute();
 
         if($sql->rowCount() > 0) {
-            $list = $sql->fetchAll();
+            $list = $sql->fetchAll(PDO::FETCH_ASSOC);
+
         }
 
         return $list;
@@ -47,7 +70,7 @@ class Advertisement {
         $sql->execute();
 
         if($sql->rowCount() > 0){
-            $item = $sql->fetch();
+            $item = $sql->fetch(PDO::FETCH_ASSOC);
 
             $sql = $pdo->prepare("SELECT id,url FROM advertisements_images WHERE advertisement_id = :id");
             $sql->bindValue(':id', $id);
@@ -62,23 +85,44 @@ class Advertisement {
             return null;
     }
 
-    public function getLatested($page, $perPage = 2){
+    public function getLatested($page, $perPage = 2, $filters){
         global $pdo;
 
         $offset = ($page - 1) * $perPage;
 
         $list = array();
 
+        $queryFilters = array('1=1');
+        if(isset($filters['category'])  && !empty($filters['category']))
+            $queryFilters[] = 'advertisements.category_id = :category_id';
+        if((isset($filters['max-price']) && !empty($filters['max-price'])) && (isset($filters['min-price']) && !empty($filters['min-price'])))
+            $queryFilters[] = 'advertisements.price BETWEEN :min_price AND :max_price';
+        if(isset($filters['title']) && !empty($filters['title']))
+            $queryFilters[] = 'advertisements.title like :title';
+        if(isset($filters['status']) && !empty($filters['status']))
+            $queryFilters[] = 'advertisements.status = :status';
+
         $sql = $pdo->prepare("SELECT *,
          (SELECT advertisements_images.url FROM advertisements_images
             WHERE advertisements_images.advertisement_id = advertisements.id LIMIT 1) as url,
         (SELECT categories.name FROM categories
             WHERE categories.id = advertisements.category_id) as category
-        FROM advertisements ORDER BY id DESC LIMIT $offset, 2");
+        FROM advertisements WHERE ".implode(' AND ', $queryFilters)." ORDER BY id DESC LIMIT $offset, 2");
+
+        if(isset($filters['category'])  && !empty($filters['category']))
+            $sql->bindValue(':category_id',$filters['category']);
+        if((isset($filters['max-price']) && !empty($filters['max-price'])) && (isset($filters['min-price']) && !empty($filters['min-price']))){
+            $sql->bindValue(':max_price',$filters['max-price']);
+            $sql->bindValue(':min_price',$filters['min-price']);
+        }
+        if(isset($filters['title']) && !empty($filters['title']))
+            $sql->bindValue(':title',$filters['title']);
+        if(isset($filters['status']) && !empty($filters['status']))
+            $sql->bindValue(':status',$filters['status']);
         $sql->execute();
 
         if($sql->rowCount() > 0) {
-            $list = $sql->fetchAll();
+            $list = $sql->fetchAll(PDO::FETCH_ASSOC);
         }
 
         return $list;
@@ -149,7 +193,7 @@ class Advertisement {
         $sql->bindValue(':id', $id);
         $sql->execute();
         if ($sql->rowCount() > 0){
-            $data = $sql->fetch();
+            $data = $sql->fetch(PDO::FETCH_ASSOC);
             $newId = $data['advertisement_id'];
         }
 

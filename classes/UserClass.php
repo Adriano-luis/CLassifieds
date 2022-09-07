@@ -9,7 +9,7 @@ class User {
         global $pdo;
 
         $sql = $pdo->query("SELECT COUNT(*) as c FROM users");
-        $total = $sql->fetch();
+        $total = $sql->fetch(PDO::FETCH_ASSOC);
 
         return $total['c'];
     }
@@ -57,7 +57,7 @@ class User {
         $sql->execute();
 
         if($sql->rowCount() > 0){
-            $data = $sql->fetch();
+            $data = $sql->fetch(PDO::FETCH_ASSOC);
             $_SESSION['user_id'] = $data['id'];
             $_SESSION['user_name'] = $data['name'];
             return true;
