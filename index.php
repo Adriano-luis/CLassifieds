@@ -98,7 +98,7 @@
 
             <ul class="pagination">
                 <?php for($q=0;$q<$totalPages;$q++): ?>
-                    <li class="<?= ($p==($q+1)) ? 'active' : ''; ?>"><a href="index.php?p=<?= $q+1; ?>"><?= $q+1; ?></a></li>
+                    <li class="<?= ($p==($q+1)) ? 'active' : ''; ?>"><a href="index.php?<?php $w = $_GET; $w['p'] = $q+1; echo http_build_query($w); ?>"><?= $q+1; ?></a></li>
                 <?php endfor; ?>
             </ul>
         </div>
